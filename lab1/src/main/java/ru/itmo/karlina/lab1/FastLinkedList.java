@@ -1,23 +1,23 @@
 package ru.itmo.karlina.lab1;
 
-public class MyLinkedList<T> {
-    private Node<T> head;
-    private Node<T> tail;
+public class FastLinkedList<T> {
+    Node<T> head;
+    Node<T> tail;
 
     Node<T> add(T value) {
         Node<T> node = new Node<>(value);
         if (head == null) { // means list is empty
-            head = node;
+            tail = node;
         } else {
-            node.prev = tail;
-            tail.next = node;
+            node.next = head;
+            head.prev = node;
         }
-        tail = node;
-        assert tail.value == value;
-        return tail;
+        head = node;
+        assert head.value == value;
+        return head;
     }
 
-    Node<T> remove () {
+    Node<T> remove() {
         assert tail != null;
         Node<T> node = tail;
         tail = tail.prev;
@@ -30,7 +30,7 @@ public class MyLinkedList<T> {
         return node;
     }
 
-    void remove (Node<T> node) {
+    void remove(Node<T> node) {
         assert node != null;
         Node<T> prev = node.prev, next = node.next;
         if (prev == null) {
