@@ -16,7 +16,7 @@ public class FrequencyCounter {
         classStartTime = System.currentTimeMillis() / 1000L;
     }
 
-    // comfortable for testing
+    // for tests
     public FrequencyCounter(String hashtag, int N, long classStartTime, QueryExecutor queryExecutor, JSONParser parser) {
         assert N >= 1 && N <= 24;
         this.hashtag = hashtag;
@@ -27,7 +27,6 @@ public class FrequencyCounter {
     }
 
     public long[] run() {
-
         long searchStartTime = classStartTime - N * 60 * 60L;
         String query = queryExecutor.buildQuery(hashtag, searchStartTime);
 

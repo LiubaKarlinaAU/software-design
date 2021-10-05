@@ -25,7 +25,7 @@ public class SearchJSONParser implements JSONParser {
         return frequencies;
     }
 
-    private JSONArray parseJSON(String jsonString){
+    private JSONArray parseJSON(String jsonString) {
         JSONObject obj = new JSONObject(jsonString);
         return obj.getJSONObject("response").getJSONArray("items");
     }

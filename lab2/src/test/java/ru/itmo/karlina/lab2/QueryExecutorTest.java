@@ -26,15 +26,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void readAsText() {
-        String answer = """
-                <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-                <html>
-                <head></head>
-                <body>
-                   The requested URL /t.html was not found on this server.
-                </body>
-                </html>""";
+    public void readHTTPResponse() {
+        String answer = "{\"response\" : 1}\n";
         withStubServer(PORT, s -> {
             whenHttp(s)
                     .match(method(Method.GET), startsWithUri("/ping"))

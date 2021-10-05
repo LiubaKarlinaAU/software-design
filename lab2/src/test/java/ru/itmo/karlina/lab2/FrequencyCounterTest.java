@@ -6,11 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-
 import static org.mockito.Mockito.when;
 
 public class FrequencyCounterTest {
+    private FrequencyCounter counter;
 
     @Mock
     private QueryExecutor executor;
@@ -18,29 +17,34 @@ public class FrequencyCounterTest {
     private JSONParser parser;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
+    public void basicWorkingTest() {
+        counter = new FrequencyCounter("cake", 24);
+
+        counter.run();
+    }
 
     @Test
     public void mockBuildQuery() {
         String hashtag = "toast";
-        long startTime = 400;
+        long startTime = 24 * 60 * 60;
         int n = 24;
         String expectedQuery = hashtag + " and " + startTime;
         String expectedJSONString = "{\"Good\": \"JSON String\"}";
-        long[] expectedFrequencies = new long[] {1, 2, 3};
+        long[] expectedFrequencies = new long[]{1, 2, 3};
 
-        FrequencyCounter counter = new FrequencyCounter("cake", n, startTime, executor, parser);
-
-        when(executor.buildQuery(hashtag, startTime))
+        when(executor.buildQuery(hashtag, 0))
                 .thenReturn(expectedQuery);
         when(executor.executeQuery(expectedQuery))
                 .thenReturn(expectedJSONString);
         when(parser.parseResponse(expectedJSONString, startTime))
                 .thenReturn(expectedFrequencies);
 
+        counter = new FrequencyCounter(hashtag, n, startTime, executor, parser);
         Assert.assertEquals(expectedFrequencies, counter.run());
     }
 }
