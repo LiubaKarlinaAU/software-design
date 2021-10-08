@@ -1,1 +1,4 @@
-/lab1/lab1.iml
+*.iml
+.idea
+out
+target
