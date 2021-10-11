@@ -22,13 +22,6 @@ public class FrequencyCounterTest {
     }
 
     @Test
-    public void basicWorkingTest() {
-        counter = new FrequencyCounter("cake", 24);
-
-        counter.run();
-    }
-
-    @Test
     public void mockBuildQuery() {
         String hashtag = "toast";
         long startTime = 24 * 60 * 60;
