@@ -68,6 +68,14 @@ public class QueryServletTest extends ServletTest {
         emptyDatabaseCommand(command, middlePart);
     }
 
+    @Test
+    public void filledDatabaseMaxCommand() throws IOException, SQLException {
+        fillDatabase();
+        String middlePart = "<h1>Product with max price: </h1>\n" + "product3\t300</br>\n";
+        String command = "max";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
     private void fillDatabase() throws SQLException {
         String addManyProducts = "insert into PRODUCT\n" +
                 "(NAME, PRICE) values\n" +
