@@ -35,6 +35,17 @@ public class QueryServletTest extends ServletTest {
     public void emptyDatabaseMaxCommand() throws IOException {
         String middlePart = "Summary price: \n" + "0\n";
         String command = "sum";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
+    @Test
+    public void emptyDatabaseCountCommand() throws IOException {
+        String middlePart = "Number of products: \n" + "0\n";
+        String command = "count";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
+    private void emptyDatabaseCommand(String command, String middlePart) throws IOException {
         StringWriter sw = new StringWriter();
 
         when(response.getWriter())
