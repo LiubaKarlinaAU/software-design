@@ -82,12 +82,11 @@ public class GetProductsServletTest {
         servlet.doGet(request, response);
 
         basicVerification();
-
         Assert.assertEquals(createExpectedResponse(""), sw.toString());
     }
 
     @Test
-    public void oneRowDataBase() throws IOException, SQLException {
+    public void oneProductDataBase() throws IOException, SQLException {
         String addOneProduct = "insert into PRODUCT\n" +
                 "(NAME, PRICE) values\n" +
                 "(\"product1\", 100)";
@@ -102,7 +101,29 @@ public class GetProductsServletTest {
         servlet.doGet(request, response);
 
         basicVerification();
+        Assert.assertEquals(expectedResponse, sw.toString());
+    }
 
+    @Test
+    public void manyProductsDataBase() throws IOException, SQLException {
+        String addManyProducts = "insert into PRODUCT\n" +
+                "(NAME, PRICE) values\n" +
+                "(\"product1\", 100),\n" +
+                "(\"product2\", 200),\n" +
+                "(\"product3\", 300)";
+        StringWriter sw = new StringWriter();
+        String expectedResponse = createExpectedResponse("product1\t100</br>\n" +
+                "product2\t200</br>\n" +
+                "product3\t300</br>\n");
+
+        createDataBase(addManyProducts);
+
+        when(response.getWriter())
+                .thenReturn(new PrintWriter(sw));
+
+        servlet.doGet(request, response);
+
+        basicVerification();
         Assert.assertEquals(expectedResponse, sw.toString());
     }
 
