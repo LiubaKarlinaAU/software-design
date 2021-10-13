@@ -76,6 +76,14 @@ public class QueryServletTest extends ServletTest {
         emptyDatabaseCommand(command, middlePart);
     }
 
+    @Test
+    public void filledDatabaseMinCommand() throws IOException, SQLException {
+        fillDatabase();
+        String middlePart = "<h1>Product with min price: </h1>\n" + "product0\t0</br>\n";
+        String command = "min";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
     private void fillDatabase() throws SQLException {
         String addManyProducts = "insert into PRODUCT\n" +
                 "(NAME, PRICE) values\n" +
