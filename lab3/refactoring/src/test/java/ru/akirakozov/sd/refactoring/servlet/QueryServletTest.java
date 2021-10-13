@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 
 import static org.mockito.Mockito.when;
 
@@ -57,6 +58,25 @@ public class QueryServletTest extends ServletTest {
         String middlePart = "<h1>Product with max price: </h1>\n";
         String command = "max";
         emptyDatabaseCommand(command, middlePart);
+    }
+
+    @Test
+    public void filledDatabaseCountCommand() throws IOException, SQLException {
+        fillDatabase();
+        String middlePart = "Number of products: \n" + "4\n";
+        String command = "count";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
+    private void fillDatabase() throws SQLException {
+        String addManyProducts = "insert into PRODUCT\n" +
+                "(NAME, PRICE) values\n" +
+                "(\"product1\", 100),\n" +
+                "(\"product2\", 200),\n" +
+                "(\"product3\", 300),\n" +
+                "(\"product0\", 0)";
+
+        executeSQLQuerySilent(addManyProducts);
     }
 
     private void emptyDatabaseCommand(String command, String middlePart) throws IOException {
