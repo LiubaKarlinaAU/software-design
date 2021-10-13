@@ -84,6 +84,14 @@ public class QueryServletTest extends ServletTest {
         emptyDatabaseCommand(command, middlePart);
     }
 
+    @Test
+    public void filledDatabaseSumCommand() throws IOException, SQLException {
+        fillDatabase();
+        String middlePart = "Summary price: \n" + "600\n";
+        String command = "sum";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
     private void fillDatabase() throws SQLException {
         String addManyProducts = "insert into PRODUCT\n" +
                 "(NAME, PRICE) values\n" +
