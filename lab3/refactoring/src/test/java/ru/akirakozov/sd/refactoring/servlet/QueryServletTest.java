@@ -32,7 +32,7 @@ public class QueryServletTest extends ServletTest {
     }
 
     @Test
-    public void emptyDatabaseMaxCommand() throws IOException {
+    public void emptyDatabaseSumCommand() throws IOException {
         String middlePart = "Summary price: \n" + "0\n";
         String command = "sum";
         emptyDatabaseCommand(command, middlePart);
@@ -42,6 +42,13 @@ public class QueryServletTest extends ServletTest {
     public void emptyDatabaseCountCommand() throws IOException {
         String middlePart = "Number of products: \n" + "0\n";
         String command = "count";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
+    @Test
+    public void emptyDatabaseMinCommand() throws IOException {
+        String middlePart = "<h1>Product with min price: </h1>\n";
+        String command = "min";
         emptyDatabaseCommand(command, middlePart);
     }
 
