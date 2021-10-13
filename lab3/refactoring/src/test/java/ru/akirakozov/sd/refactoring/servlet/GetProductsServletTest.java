@@ -43,21 +43,21 @@ public class GetProductsServletTest {
     @Before
     public void setUp() throws Exception {
         deleteDataBase();
-        createDataBase();
+        createDataBase(SQL_CREATE_TABLE);
         MockitoAnnotations.initMocks(this);
         servlet = new GetProductsServlet();
     }
 
     @After
-    public void cleanUp() throws Exception {
+    public void cleanUp() {
         deleteDataBase();
     }
 
-    private static void createDataBase() throws SQLException {
+    private static void createDataBase(String sql) throws SQLException {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
             Statement stmt = c.createStatement();
 
-            stmt.executeUpdate(SQL_CREATE_TABLE);
+            stmt.executeUpdate(sql);
             stmt.close();
         }
     }
@@ -86,6 +86,36 @@ public class GetProductsServletTest {
                 .thenReturn(new PrintWriter(sw));
 
         servlet.doGet(request, response);
+
+        verify(response).setContentType(contentTypeCaptor.capture());
+        verify(response).setStatus(statusCaptor.capture());
+
+        Assert.assertEquals(expectedResponse, sw.toString());
+        Assert.assertEquals(1, contentTypeCaptor.getAllValues().size());
+        Assert.assertEquals(expectedContentType, contentTypeCaptor.getAllValues().get(0));
+        Assert.assertEquals(1, statusCaptor.getAllValues().size());
+        Assert.assertEquals(expectedStatus, statusCaptor.getAllValues().get(0));
+    }
+
+    @Test
+    public void oneRowDataBase() throws IOException, SQLException {
+        String addOneProduct = "insert into PRODUCT\n" +
+                "(NAME, PRICE) values\n" +
+                "(\"product1\", 100)";
+        createDataBase(addOneProduct);
+        StringWriter sw = new StringWriter();
+
+        String expectedContentType = "text/html";
+        Integer expectedStatus = 200;
+        String expectedResponse = "<html><body>\n" +
+                "product1\t100</br>\n" +
+                "</body></html>\n";
+
+        when(response.getWriter())
+                .thenReturn(new PrintWriter(sw));
+
+        servlet.doGet(request, response);
+
 
         verify(response).setContentType(contentTypeCaptor.capture());
         verify(response).setStatus(statusCaptor.capture());
