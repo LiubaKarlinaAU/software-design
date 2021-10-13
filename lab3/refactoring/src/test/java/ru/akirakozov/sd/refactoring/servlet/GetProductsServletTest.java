@@ -39,7 +39,6 @@ public class GetProductsServletTest {
             " NAME           TEXT    NOT NULL, " +
             " PRICE          INT     NOT NULL)";
 
-
     @Before
     public void setUp() throws Exception {
         deleteDataBase();
@@ -77,24 +76,14 @@ public class GetProductsServletTest {
     public void emptyDataBase() throws IOException {
         StringWriter sw = new StringWriter();
 
-        String expectedContentType = "text/html";
-        Integer expectedStatus = 200;
-        String expectedResponse = "<html><body>\n" +
-                "</body></html>\n";
-
         when(response.getWriter())
                 .thenReturn(new PrintWriter(sw));
 
         servlet.doGet(request, response);
 
-        verify(response).setContentType(contentTypeCaptor.capture());
-        verify(response).setStatus(statusCaptor.capture());
+        basicVerification();
 
-        Assert.assertEquals(expectedResponse, sw.toString());
-        Assert.assertEquals(1, contentTypeCaptor.getAllValues().size());
-        Assert.assertEquals(expectedContentType, contentTypeCaptor.getAllValues().get(0));
-        Assert.assertEquals(1, statusCaptor.getAllValues().size());
-        Assert.assertEquals(expectedStatus, statusCaptor.getAllValues().get(0));
+        Assert.assertEquals(createExpectedResponse(""), sw.toString());
     }
 
     @Test
@@ -102,25 +91,32 @@ public class GetProductsServletTest {
         String addOneProduct = "insert into PRODUCT\n" +
                 "(NAME, PRICE) values\n" +
                 "(\"product1\", 100)";
-        createDataBase(addOneProduct);
         StringWriter sw = new StringWriter();
+        String expectedResponse = createExpectedResponse("product1\t100</br>\n");
 
-        String expectedContentType = "text/html";
-        Integer expectedStatus = 200;
-        String expectedResponse = "<html><body>\n" +
-                "product1\t100</br>\n" +
-                "</body></html>\n";
+        createDataBase(addOneProduct);
 
         when(response.getWriter())
                 .thenReturn(new PrintWriter(sw));
 
         servlet.doGet(request, response);
 
+        basicVerification();
+
+        Assert.assertEquals(expectedResponse, sw.toString());
+    }
+
+    private static String createExpectedResponse(String middlePart) {
+        return "<html><body>\n" + middlePart + "</body></html>\n";
+    }
+
+    private void basicVerification() {
+        String expectedContentType = "text/html";
+        Integer expectedStatus = 200;
 
         verify(response).setContentType(contentTypeCaptor.capture());
         verify(response).setStatus(statusCaptor.capture());
 
-        Assert.assertEquals(expectedResponse, sw.toString());
         Assert.assertEquals(1, contentTypeCaptor.getAllValues().size());
         Assert.assertEquals(expectedContentType, contentTypeCaptor.getAllValues().get(0));
         Assert.assertEquals(1, statusCaptor.getAllValues().size());
