@@ -52,6 +52,13 @@ public class QueryServletTest extends ServletTest {
         emptyDatabaseCommand(command, middlePart);
     }
 
+    @Test
+    public void emptyDatabaseMaxCommand() throws IOException {
+        String middlePart = "<h1>Product with max price: </h1>\n";
+        String command = "max";
+        emptyDatabaseCommand(command, middlePart);
+    }
+
     private void emptyDatabaseCommand(String command, String middlePart) throws IOException {
         StringWriter sw = new StringWriter();
 
