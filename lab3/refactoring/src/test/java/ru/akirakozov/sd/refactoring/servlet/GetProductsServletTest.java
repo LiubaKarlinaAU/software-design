@@ -47,13 +47,12 @@ public class GetProductsServletTest extends ServletTest {
 
     @Test
     public void oneProductDataBase() throws IOException, SQLException {
-        String addOneProduct = "insert into PRODUCT\n" +
-                "(NAME, PRICE) values\n" +
-                "(\"product1\", 100)";
+        String productName = "get-product2";
+        long productPrice = 100L;
         StringWriter sw = new StringWriter();
-        String expectedResponse = createExpectedResponse("product1\t100</br>\n");
+        String expectedResponse = createExpectedResponse(productName + "\t" + productPrice + "</br>\n");
 
-        executeSQLQuerySilent(addOneProduct);
+        executeSQLQuerySilent(makeInsertQuery(productName, productPrice));
 
         when(response.getWriter())
                 .thenReturn(new PrintWriter(sw));

@@ -23,10 +23,10 @@ public class ServletTest {
 
     private static final String DATABASE_URL = "jdbc:sqlite:test.db";
     private static final String DATABASE_FILENAME = "test.db";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-            "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-            " NAME           TEXT    NOT NULL, " +
-            " PRICE          INT     NOT NULL)";
+    private static final String SQL_CREATE_TABLE = "create table if not exists PRODUCT" +
+            "(id integer primary key autoincrement not null," +
+            " NAME           text    not null, " +
+            " PRICE          int     not null)";
 
     protected static void prepareDatabase() throws SQLException {
         deleteDatabase();
@@ -79,5 +79,11 @@ public class ServletTest {
         Assert.assertEquals(expectedContentType, contentTypeCaptor.getAllValues().get(0));
         Assert.assertEquals(1, statusCaptor.getAllValues().size());
         Assert.assertEquals(expectedStatus, statusCaptor.getAllValues().get(0));
+    }
+
+    protected static String makeInsertQuery(String productName, long productPrice) {
+        return "insert into PRODUCT\n" +
+                "(NAME, PRICE) values" +
+                "(\"" + productName + "\", " + productPrice + ")";
     }
 }

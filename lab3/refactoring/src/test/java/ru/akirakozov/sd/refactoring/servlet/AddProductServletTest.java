@@ -13,12 +13,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.*;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class AddProductServletTest extends ServletTest {
     @Mock
     private HttpServletRequest request;
     private AddProductServlet servlet;
+    private static final String SQL_QUERY_SELECT_ALL = "select * from PRODUCT";
 
     @Before
     public void setUp() throws Exception {
@@ -34,10 +35,29 @@ public class AddProductServletTest extends ServletTest {
 
     @Test
     public void addOneProduct() throws IOException, SQLException {
-        StringWriter sw = new StringWriter();
-        String productName = "product1";
+        String productName = "add-product1";
         Long productPrice = 111L;
-        String expectedResponse = "product1 111\n";
+        String expectedResponse = productName + " " + productPrice + "\n";
+
+        addProduct(productName, productPrice);
+
+        Assert.assertEquals(expectedResponse, executeSQLQuery(SQL_QUERY_SELECT_ALL));
+    }
+
+    @Test
+    public void addAlreadyExistingProduct() throws IOException, SQLException {
+        String productName = "add-product2";
+        long productPrice = 100L;
+        String expectedResponse = "add-product2 100\n" +
+                "add-product2 100\n";
+        executeSQLQuerySilent(makeInsertQuery(productName, productPrice));
+
+        addProduct(productName, productPrice);
+        Assert.assertEquals(expectedResponse, executeSQLQuery(SQL_QUERY_SELECT_ALL));
+    }
+
+    private void addProduct(String productName, Long productPrice) throws IOException {
+        StringWriter sw = new StringWriter();
 
         when(request.getParameter("name"))
                 .thenReturn(productName);
@@ -47,10 +67,7 @@ public class AddProductServletTest extends ServletTest {
                 .thenReturn(new PrintWriter(sw));
 
         servlet.doGet(request, response);
-
         basicVerification(sw);
-
-        Assert.assertEquals(expectedResponse, executeSQLQuery("select * from PRODUCT"));
     }
 
     private void basicVerification(StringWriter sw) {
