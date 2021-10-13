@@ -85,8 +85,4 @@ public class GetProductsServletTest extends ServletTest {
         statusAndContentTypeVerification();
         Assert.assertEquals(expectedResponse, sw.toString());
     }
-
-    private static String createExpectedResponse(String middlePart) {
-        return "<html><body>\n" + middlePart + "</body></html>\n";
-    }
 }

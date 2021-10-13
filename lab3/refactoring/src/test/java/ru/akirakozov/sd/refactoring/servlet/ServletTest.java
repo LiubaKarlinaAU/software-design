@@ -86,4 +86,8 @@ public class ServletTest {
                 "(NAME, PRICE) values" +
                 "(\"" + productName + "\", " + productPrice + ")";
     }
+
+    protected static String createExpectedResponse(String middlePart) {
+        return "<html><body>\n" + middlePart + "</body></html>\n";
+    }
 }
