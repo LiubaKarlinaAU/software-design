@@ -33,6 +33,7 @@ public class GetProductsServletTest {
     private ArgumentCaptor<Integer> statusCaptor;
 
     private GetProductsServlet servlet;
+    private static final String DATABASE_URL = "jdbc:sqlite:test.db";
     private static final String DATABASE_FILENAME = "test.db";
     private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS PRODUCT" +
             "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
@@ -42,7 +43,7 @@ public class GetProductsServletTest {
     @Before
     public void setUp() throws Exception {
         deleteDataBase();
-        createDataBase(SQL_CREATE_TABLE);
+        runSQLCommand(SQL_CREATE_TABLE);
         MockitoAnnotations.initMocks(this);
         servlet = new GetProductsServlet();
     }
@@ -52,8 +53,8 @@ public class GetProductsServletTest {
         deleteDataBase();
     }
 
-    private static void createDataBase(String sql) throws SQLException {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+    private static void runSQLCommand(String sql) throws SQLException {
+        try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
             Statement stmt = c.createStatement();
 
             stmt.executeUpdate(sql);
@@ -93,7 +94,7 @@ public class GetProductsServletTest {
         StringWriter sw = new StringWriter();
         String expectedResponse = createExpectedResponse("product1\t100</br>\n");
 
-        createDataBase(addOneProduct);
+        runSQLCommand(addOneProduct);
 
         when(response.getWriter())
                 .thenReturn(new PrintWriter(sw));
@@ -116,7 +117,7 @@ public class GetProductsServletTest {
                 "product2\t200</br>\n" +
                 "product3\t300</br>\n");
 
-        createDataBase(addManyProducts);
+        runSQLCommand(addManyProducts);
 
         when(response.getWriter())
                 .thenReturn(new PrintWriter(sw));
