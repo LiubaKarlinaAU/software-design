@@ -2,41 +2,24 @@ package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.servlet.utils.HTMLWriter;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * @author akirakozov
  */
-public class GetProductsServlet extends HttpServlet {
+public class GetProductsServlet extends DatabaseServlet {
     private static final String GET_QUERY = "SELECT * FROM PRODUCT";
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery(GET_QUERY);
+    void doQuery(HttpServletRequest request, HttpServletResponse response, Statement stmt) throws IOException, SQLException {
+        ResultSet rs = stmt.executeQuery(GET_QUERY);
 
-                HTMLWriter writer = new HTMLWriter(response.getWriter(), rs);
-                writer.writeGet();
+        HTMLWriter writer = new HTMLWriter(response.getWriter(), rs);
+        writer.writeGet();
 
-                rs.close();
-                stmt.close();
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
+        rs.close();
     }
 }
