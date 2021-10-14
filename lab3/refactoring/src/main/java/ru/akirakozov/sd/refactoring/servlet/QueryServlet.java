@@ -36,23 +36,10 @@ public class QueryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
-
-        switch (command) {
-            case MAX:
-                doCommand(response, commandQuery.get(MAX), commandFirstLine.get(MAX), isOneNumberAnswer(MAX));
-                break;
-            case MIN:
-                doCommand(response, commandQuery.get(MIN), commandFirstLine.get(MIN), isOneNumberAnswer(MIN));
-                break;
-            case SUM:
-                doCommand(response, commandQuery.get(SUM), commandFirstLine.get(SUM), isOneNumberAnswer(SUM));
-                break;
-            case COUNT:
-                doCommand(response, commandQuery.get(COUNT), commandFirstLine.get(COUNT), isOneNumberAnswer(COUNT));
-                break;
-            default:
-                response.getWriter().println("Unknown command: " + command);
-                break;
+        if (commandQuery.containsKey(command)) {
+            doCommand(response, commandQuery.get(command), commandFirstLine.get(command), isOneNumberAnswer(command));
+        } else {
+            response.getWriter().println("Unknown command: " + command);
         }
     }
 
