@@ -1,5 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
+import ru.akirakozov.sd.refactoring.servlet.utils.HTMLWriter;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,23 +53,8 @@ public class QueryServlet extends HttpServlet {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
                 ResultSet rs = stmt.executeQuery(query);
-                PrintWriter writer = response.getWriter();
-                writer.println("<html><body>");
-                writer.println(firstLine);
-
-                if (isOneNumberAnswer(command)) {
-                    if (rs.next()) {
-                        writer.println(rs.getInt(1));
-                    }
-                } else {
-                    while (rs.next()) {
-                        String name = rs.getString("name");
-                        int price = rs.getInt("price");
-                        writer.println(name + "\t" + price + "</br>");
-                    }
-                }
-                writer.println("</body></html>");
-
+                HTMLWriter writer = new HTMLWriter(response.getWriter(), rs);
+                writer.writeCommand(firstLine, isOneNumberAnswer(command));
                 rs.close();
                 stmt.close();
             }
