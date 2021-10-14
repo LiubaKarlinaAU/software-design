@@ -13,21 +13,26 @@ import java.sql.Statement;
  * @author akirakozov
  */
 public class QueryServlet extends HttpServlet {
+    private static final String MAX = "max";
+    private static final String MIN = "min";
+    private static final String SUM = "sum";
+    private static final String COUNT = "count";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
 
         switch (command) {
-            case "max":
+            case MAX:
                 doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", "<h1>Product with max price: </h1>", false);
                 break;
-            case "min":
+            case MIN:
                 doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", "<h1>Product with min price: </h1>", false);
                 break;
-            case "sum":
+            case SUM:
                 doCommand(response, "SELECT SUM(price) FROM PRODUCT", "Summary price: ", true);
                 break;
-            case "count":
+            case COUNT:
                 doCommand(response, "SELECT COUNT(*) FROM PRODUCT", "Number of products: ", true);
                 break;
             default:
