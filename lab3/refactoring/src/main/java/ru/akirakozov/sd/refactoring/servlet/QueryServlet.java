@@ -26,22 +26,29 @@ public class QueryServlet extends HttpServlet {
         put(COUNT, "SELECT COUNT(*) FROM PRODUCT");
     }};
 
+    private static final Map<String, String> commandFirstLine = new HashMap<String, String>() {{
+        put(MAX, "<h1>Product with max price: </h1>");
+        put(MIN, "<h1>Product with min price: </h1>");
+        put(SUM, "Summary price: ");
+        put(COUNT, "Number of products: ");
+    }};
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
 
         switch (command) {
             case MAX:
-                doCommand(response, commandQuery.get(MAX), "<h1>Product with max price: </h1>", false);
+                doCommand(response, commandQuery.get(MAX), commandFirstLine.get(MAX), false);
                 break;
             case MIN:
-                doCommand(response, commandQuery.get(MIN), "<h1>Product with min price: </h1>", false);
+                doCommand(response, commandQuery.get(MIN), commandFirstLine.get(MIN), false);
                 break;
             case SUM:
-                doCommand(response, commandQuery.get(SUM), "Summary price: ", true);
+                doCommand(response, commandQuery.get(SUM), commandFirstLine.get(SUM), true);
                 break;
             case COUNT:
-                doCommand(response, commandQuery.get(COUNT), "Number of products: ", true);
+                doCommand(response, commandQuery.get(COUNT), commandFirstLine.get(COUNT), true);
                 break;
             default:
                 response.getWriter().println("Unknown command: " + command);
