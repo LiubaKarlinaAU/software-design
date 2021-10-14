@@ -54,9 +54,6 @@ public class QueryServlet extends HttpServlet {
                 response.getWriter().println("Unknown command: " + command);
                 break;
         }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     private void doCommand(HttpServletResponse response, String query, String firstLine, boolean isSingleLineAnswer) {
@@ -87,5 +84,8 @@ public class QueryServlet extends HttpServlet {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        response.setContentType("text/html");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
