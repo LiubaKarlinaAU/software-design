@@ -9,6 +9,8 @@ public class HTMLWriter {
     private final ResultSet rs;
     private static final String HTML_START = "<html><body>";
     private static final String HTML_END = "</body></html>";
+    private static final String NAME = "name";
+    private static final String PRICE = "price";
 
     public HTMLWriter(PrintWriter writer, ResultSet rs) {
         this.writer = writer;
@@ -37,8 +39,8 @@ public class HTMLWriter {
 
     private void writeAllRows() throws SQLException {
         while (rs.next()) {
-            String name = rs.getString("name");
-            int price = rs.getInt("price");
+            String name = rs.getString(NAME);
+            int price = rs.getInt(PRICE);
             writer.println(name + "\t" + price + "</br>");
         }
     }
