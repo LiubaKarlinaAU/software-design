@@ -7,6 +7,8 @@ import java.sql.SQLException;
 public class HTMLWriter {
     private final PrintWriter writer;
     private final ResultSet rs;
+    private static final String HTML_START = "<html><body>";
+    private static final String HTML_END = "</body></html>";
 
     public HTMLWriter(PrintWriter writer, ResultSet rs) {
         this.writer = writer;
@@ -14,7 +16,7 @@ public class HTMLWriter {
     }
 
     public void writeCommand(String firstLine, boolean isOneNumberAnswer) throws SQLException {
-        writer.println("<html><body>");
+        writer.println(HTML_START);
         writer.println(firstLine);
 
         if (isOneNumberAnswer) {
@@ -22,15 +24,15 @@ public class HTMLWriter {
         } else {
             writeAllRows();
         }
-        writer.println("</body></html>");
+        writer.println(HTML_END);
     }
 
     public void writeGet() throws SQLException {
-        writer.println("<html><body>");
+        writer.println(HTML_START);
 
         writeAllRows();
 
-        writer.println("</body></html>");
+        writer.println(HTML_END);
     }
 
     private void writeAllRows() throws SQLException {
