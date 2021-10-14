@@ -17,23 +17,29 @@ public class QueryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
 
-        if ("max".equals(command)) {
-            doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", "<h1>Product with max price: </h1>", false);
-        } else if ("min".equals(command)) {
-            doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", "<h1>Product with min price: </h1>", false);
-        } else if ("sum".equals(command)) {
-            doCommand(response, "SELECT SUM(price) FROM PRODUCT", "Summary price: ",true);
-        } else if ("count".equals(command)) {
-            doCommand(response, "SELECT COUNT(*) FROM PRODUCT", "Number of products: ", true);
-        } else {
-            response.getWriter().println("Unknown command: " + command);
+        switch (command) {
+            case "max":
+                doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", "<h1>Product with max price: </h1>", false);
+                break;
+            case "min":
+                doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", "<h1>Product with min price: </h1>", false);
+                break;
+            case "sum":
+                doCommand(response, "SELECT SUM(price) FROM PRODUCT", "Summary price: ", true);
+                break;
+            case "count":
+                doCommand(response, "SELECT COUNT(*) FROM PRODUCT", "Number of products: ", true);
+                break;
+            default:
+                response.getWriter().println("Unknown command: " + command);
+                break;
         }
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private void doCommand(HttpServletResponse response, String query, String firstLine, boolean isSingleLineAnswer){
+    private void doCommand(HttpServletResponse response, String query, String firstLine, boolean isSingleLineAnswer) {
         try {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
@@ -47,8 +53,8 @@ public class QueryServlet extends HttpServlet {
                     }
                 } else {
                     while (rs.next()) {
-                        String  name = rs.getString("name");
-                        int price  = rs.getInt("price");
+                        String name = rs.getString("name");
+                        int price = rs.getInt("price");
                         response.getWriter().println(name + "\t" + price + "</br>");
                     }
                 }
