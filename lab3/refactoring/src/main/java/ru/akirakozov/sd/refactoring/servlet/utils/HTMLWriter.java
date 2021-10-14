@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class HTMLWriter {
-    PrintWriter writer;
-    ResultSet rs;
+    private final PrintWriter writer;
+    private final ResultSet rs;
 
     public HTMLWriter(PrintWriter writer, ResultSet rs) {
         this.writer = writer;
