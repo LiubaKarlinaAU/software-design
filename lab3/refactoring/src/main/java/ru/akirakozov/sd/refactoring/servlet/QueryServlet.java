@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author akirakozov
@@ -17,6 +19,12 @@ public class QueryServlet extends HttpServlet {
     private static final String MIN = "min";
     private static final String SUM = "sum";
     private static final String COUNT = "count";
+    private static final Map<String, String> commandQuery = new HashMap<String, String>() {{
+        put(MAX, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
+        put(MIN, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
+        put(SUM, "SELECT SUM(price) FROM PRODUCT");
+        put(COUNT, "SELECT COUNT(*) FROM PRODUCT");
+    }};
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -24,16 +32,16 @@ public class QueryServlet extends HttpServlet {
 
         switch (command) {
             case MAX:
-                doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", "<h1>Product with max price: </h1>", false);
+                doCommand(response, commandQuery.get(MAX), "<h1>Product with max price: </h1>", false);
                 break;
             case MIN:
-                doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", "<h1>Product with min price: </h1>", false);
+                doCommand(response, commandQuery.get(MIN), "<h1>Product with min price: </h1>", false);
                 break;
             case SUM:
-                doCommand(response, "SELECT SUM(price) FROM PRODUCT", "Summary price: ", true);
+                doCommand(response, commandQuery.get(SUM), "Summary price: ", true);
                 break;
             case COUNT:
-                doCommand(response, "SELECT COUNT(*) FROM PRODUCT", "Number of products: ", true);
+                doCommand(response, commandQuery.get(COUNT), "Number of products: ", true);
                 break;
             default:
                 response.getWriter().println("Unknown command: " + command);
