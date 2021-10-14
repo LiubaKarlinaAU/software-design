@@ -39,16 +39,16 @@ public class QueryServlet extends HttpServlet {
 
         switch (command) {
             case MAX:
-                doCommand(response, commandQuery.get(MAX), commandFirstLine.get(MAX), false);
+                doCommand(response, commandQuery.get(MAX), commandFirstLine.get(MAX), isOneNumberAnswer(MAX));
                 break;
             case MIN:
-                doCommand(response, commandQuery.get(MIN), commandFirstLine.get(MIN), false);
+                doCommand(response, commandQuery.get(MIN), commandFirstLine.get(MIN), isOneNumberAnswer(MIN));
                 break;
             case SUM:
-                doCommand(response, commandQuery.get(SUM), commandFirstLine.get(SUM), true);
+                doCommand(response, commandQuery.get(SUM), commandFirstLine.get(SUM), isOneNumberAnswer(SUM));
                 break;
             case COUNT:
-                doCommand(response, commandQuery.get(COUNT), commandFirstLine.get(COUNT), true);
+                doCommand(response, commandQuery.get(COUNT), commandFirstLine.get(COUNT), isOneNumberAnswer(COUNT));
                 break;
             default:
                 response.getWriter().println("Unknown command: " + command);
@@ -56,7 +56,7 @@ public class QueryServlet extends HttpServlet {
         }
     }
 
-    private void doCommand(HttpServletResponse response, String query, String firstLine, boolean isSingleLineAnswer) {
+    private void doCommand(HttpServletResponse response, String query, String firstLine, boolean isOneNumberAnswer) {
         try {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
@@ -64,7 +64,7 @@ public class QueryServlet extends HttpServlet {
                 response.getWriter().println("<html><body>");
                 response.getWriter().println(firstLine);
 
-                if (isSingleLineAnswer) {
+                if (isOneNumberAnswer) {
                     if (rs.next()) {
                         response.getWriter().println(rs.getInt(1));
                     }
@@ -87,5 +87,9 @@ public class QueryServlet extends HttpServlet {
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    private static boolean isOneNumberAnswer(String command) {
+        return SUM.equals(command) || COUNT.equals(command);
     }
 }
