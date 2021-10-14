@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -50,21 +51,22 @@ public class QueryServlet extends HttpServlet {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
                 ResultSet rs = stmt.executeQuery(query);
-                response.getWriter().println("<html><body>");
-                response.getWriter().println(firstLine);
+                PrintWriter writer = response.getWriter();
+                writer.println("<html><body>");
+                writer.println(firstLine);
 
                 if (isOneNumberAnswer(command)) {
                     if (rs.next()) {
-                        response.getWriter().println(rs.getInt(1));
+                        writer.println(rs.getInt(1));
                     }
                 } else {
                     while (rs.next()) {
                         String name = rs.getString("name");
                         int price = rs.getInt("price");
-                        response.getWriter().println(name + "\t" + price + "</br>");
+                        writer.println(name + "\t" + price + "</br>");
                     }
                 }
-                response.getWriter().println("</body></html>");
+                writer.println("</body></html>");
 
                 rs.close();
                 stmt.close();
