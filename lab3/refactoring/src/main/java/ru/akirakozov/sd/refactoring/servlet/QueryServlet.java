@@ -37,13 +37,15 @@ public class QueryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
         if (commandQuery.containsKey(command)) {
-            doCommand(response, commandQuery.get(command), commandFirstLine.get(command), isOneNumberAnswer(command));
+            doCommand(response, command);
         } else {
             response.getWriter().println("Unknown command: " + command);
         }
     }
 
-    private void doCommand(HttpServletResponse response, String query, String firstLine, boolean isOneNumberAnswer) {
+    private void doCommand(HttpServletResponse response, String command) {
+        String query = commandQuery.get(command);
+        String firstLine = commandFirstLine.get(command);
         try {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
@@ -51,7 +53,7 @@ public class QueryServlet extends HttpServlet {
                 response.getWriter().println("<html><body>");
                 response.getWriter().println(firstLine);
 
-                if (isOneNumberAnswer) {
+                if (isOneNumberAnswer(command)) {
                     if (rs.next()) {
                         response.getWriter().println(rs.getInt(1));
                     }
