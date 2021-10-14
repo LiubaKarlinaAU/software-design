@@ -1,5 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
+import ru.akirakozov.sd.refactoring.servlet.utils.HTMLWriter;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,15 +24,9 @@ public class GetProductsServlet extends HttpServlet {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
                 ResultSet rs = stmt.executeQuery(GET_QUERY);
-                PrintWriter writer = response.getWriter();
-                writer.println("<html><body>");
 
-                while (rs.next()) {
-                    String name = rs.getString("name");
-                    int price = rs.getInt("price");
-                    writer.println(name + "\t" + price + "</br>");
-                }
-                writer.println("</body></html>");
+                HTMLWriter writer = new HTMLWriter(response.getWriter(), rs);
+                writer.writeGet();
 
                 rs.close();
                 stmt.close();

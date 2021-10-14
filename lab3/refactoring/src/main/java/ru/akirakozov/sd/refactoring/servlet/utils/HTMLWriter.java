@@ -30,4 +30,15 @@ public class HTMLWriter {
         }
         writer.println("</body></html>");
     }
+
+    public void writeGet() throws SQLException {
+        writer.println("<html><body>");
+
+        while (rs.next()) {
+            String name = rs.getString("name");
+            int price = rs.getInt("price");
+            writer.println(name + "\t" + price + "</br>");
+        }
+        writer.println("</body></html>");
+    }
 }
