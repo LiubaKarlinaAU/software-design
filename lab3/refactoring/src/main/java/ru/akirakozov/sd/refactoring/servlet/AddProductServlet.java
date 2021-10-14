@@ -20,8 +20,7 @@ public class AddProductServlet extends HttpServlet {
 
         try {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                String sql = "INSERT INTO PRODUCT " +
-                        "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
+                String sql = makeInsertQuery(name, price);
                 Statement stmt = c.createStatement();
                 stmt.executeUpdate(sql);
                 stmt.close();
@@ -33,5 +32,10 @@ public class AddProductServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println("OK");
+    }
+
+    private static String makeInsertQuery(String name, long price) {
+        return "INSERT INTO PRODUCT " +
+                "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
     }
 }
