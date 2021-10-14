@@ -10,11 +10,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public abstract class DatabaseServlet extends HttpServlet {
+    private static final String DATABASE_URL = "jdbc:sqlite:test.db";
+    private static final String CONTENT_TYPE = "text/html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
-            try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+            try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
                 Statement stmt = c.createStatement();
                 doQuery(request, response, stmt);
                 stmt.close();
@@ -23,7 +25,7 @@ public abstract class DatabaseServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        response.setContentType("text/html");
+        response.setContentType(CONTENT_TYPE);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
