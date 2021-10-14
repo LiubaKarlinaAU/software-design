@@ -18,89 +18,13 @@ public class QueryServlet extends HttpServlet {
         String command = request.getParameter("command");
 
         if ("max".equals(command)) {
-            try {
-                try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("<h1>Product with max price: </h1>");
-
-                    while (rs.next()) {
-                        String  name = rs.getString("name");
-                        int price  = rs.getInt("price");
-                        response.getWriter().println(name + "\t" + price + "</br>");
-                    }
-                    response.getWriter().println("</body></html>");
-
-                    rs.close();
-                    stmt.close();
-                }
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", "<h1>Product with max price: </h1>", false);
         } else if ("min".equals(command)) {
-            try {
-                try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("<h1>Product with min price: </h1>");
-
-                    while (rs.next()) {
-                        String  name = rs.getString("name");
-                        int price  = rs.getInt("price");
-                        response.getWriter().println(name + "\t" + price + "</br>");
-                    }
-                    response.getWriter().println("</body></html>");
-
-                    rs.close();
-                    stmt.close();
-                }
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            doCommand(response, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", "<h1>Product with min price: </h1>", false);
         } else if ("sum".equals(command)) {
-            try {
-                try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT SUM(price) FROM PRODUCT");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("Summary price: ");
-
-                    if (rs.next()) {
-                        response.getWriter().println(rs.getInt(1));
-                    }
-                    response.getWriter().println("</body></html>");
-
-                    rs.close();
-                    stmt.close();
-                }
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            doCommand(response, "SELECT SUM(price) FROM PRODUCT", "Summary price: ",true);
         } else if ("count".equals(command)) {
-            try {
-                try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM PRODUCT");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("Number of products: ");
-
-                    if (rs.next()) {
-                        response.getWriter().println(rs.getInt(1));
-                    }
-                    response.getWriter().println("</body></html>");
-
-                    rs.close();
-                    stmt.close();
-                }
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            doCommand(response, "SELECT COUNT(*) FROM PRODUCT", "Number of products: ", true);
         } else {
             response.getWriter().println("Unknown command: " + command);
         }
@@ -109,4 +33,33 @@ public class QueryServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+    private void doCommand(HttpServletResponse response, String query, String firstLine, boolean isSingleLineAnswer){
+        try {
+            try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+                Statement stmt = c.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                response.getWriter().println("<html><body>");
+                response.getWriter().println(firstLine);
+
+                if (isSingleLineAnswer) {
+                    if (rs.next()) {
+                        response.getWriter().println(rs.getInt(1));
+                    }
+                } else {
+                    while (rs.next()) {
+                        String  name = rs.getString("name");
+                        int price  = rs.getInt("price");
+                        response.getWriter().println(name + "\t" + price + "</br>");
+                    }
+                }
+                response.getWriter().println("</body></html>");
+
+                rs.close();
+                stmt.close();
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
