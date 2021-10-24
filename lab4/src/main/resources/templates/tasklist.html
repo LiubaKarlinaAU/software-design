@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h3>Your tasks from </h3>
+<table>
+    <th:block th:each="task : ${list_tasks}">
+        <tr>
+            <td th:text="${task.getId()}"/>
+            <td th:if="${task.isDone()}" bgcolor="green" th:text="${task.getName()}"/>
+            <td th:if="!${task.isDone()}" bgcolor="yellow" th:text="${task.getName()}"/>
+        </tr>
+    </th:block>
+</table>
+
+<h3>Add new task</h3>
+<form th:object="${task}" method="POST" action="/add-task">
+    <table>
+        <tr>
+            <td><label>Name:</label></td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+    </table>
+
+    <input type="submit" value="add">
+</form>
+
+</body>
+</html>

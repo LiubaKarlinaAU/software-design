@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All tasks</title>
+</head>
+<body>
+
+<h3>All your tasks</h3>
+<table>
+    <th:block th:each="task : ${tasks}">
+        <tr>
+            <td th:text="${task.getId()}"/>
+            <td th:if="${task.isDone()}" bgcolor="green" th:text="${task.getName()}"/>
+            <td th:if="!${task.isDone()}" bgcolor="yellow" th:text="${task.getName()}"/>
+        </tr>
+    </th:block>
+</table>
+
+<h3>Mark task as done</h3>
+<form th:object="${taskIndex}" method="POST" action="/mark-task-as-done">
+    <table>
+        <tr>
+            <td><label>Id:</label></td>
+            <td><input type="text" placeholder="" th:field="*{index}"/></td>
+        </tr>
+    </table>
+
+    <input type="submit" value="mark">
+</form>
+</body>
+</html>
