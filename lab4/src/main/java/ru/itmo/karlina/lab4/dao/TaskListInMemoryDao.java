@@ -34,7 +34,9 @@ public class TaskListInMemoryDao implements TaskListDao {
 
     @Override
     public TaskList get(int id) {
-        assert map.containsKey(id);
-        return map.get(id);
+        if (map.containsKey(id)) {
+            return map.get(id);
+        }
+        return null;
     }
 }

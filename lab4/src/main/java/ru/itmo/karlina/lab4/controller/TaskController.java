@@ -10,6 +10,7 @@ import ru.itmo.karlina.lab4.dao.TaskDao;
 import ru.itmo.karlina.lab4.dao.TaskListDao;
 import ru.itmo.karlina.lab4.model.Index;
 import ru.itmo.karlina.lab4.model.Task;
+import ru.itmo.karlina.lab4.model.TaskList;
 
 import java.util.List;
 
@@ -34,8 +35,12 @@ public class TaskController {
     public String getTaskLists(@PathVariable("id") String id, ModelMap map) {
         int listId;
         listId = Integer.parseInt(id);
+        TaskList ts = taskListDao.get(listId);
+        if (ts == null) {
+            return "error";
+        }
         currentTaskListId = listId;
-        prepareModelMap(map, taskDao.getTasks(listId));
+        prepareModelMap(map, taskDao.getTasks(listId), ts);
         return "tasklist";
     }
 
@@ -53,8 +58,9 @@ public class TaskController {
         return "redirect:/get-tasks";
     }
 
-    private void prepareModelMap(ModelMap map, List<Task> tasks) {
+    private void prepareModelMap(ModelMap map, List<Task> tasks, TaskList ts) {
         map.addAttribute("list_tasks", tasks);
+        map.addAttribute("tasklist", ts);
         map.addAttribute("task", new Task());
         map.addAttribute("taskIndex", new Index());
     }

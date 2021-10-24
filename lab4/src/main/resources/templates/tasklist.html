@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<h3>Your tasks from </h3>
+<h3>Your tasks from <span th:text="${tasklist.getName()}" /> </h3>
 <table>
     <th:block th:each="task : ${list_tasks}">
         <tr>

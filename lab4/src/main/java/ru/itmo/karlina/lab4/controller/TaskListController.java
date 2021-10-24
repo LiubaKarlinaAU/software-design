@@ -29,6 +29,11 @@ public class TaskListController {
         return "index";
     }
 
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
+    public String getErrorPage(ModelMap map) {
+        return "error";
+    }
+
     @RequestMapping(value = "/add-task-list", method = RequestMethod.POST)
     public String addQuestion(@ModelAttribute("tasklist") TaskList taskList) {
         taskListDao.addTaskList(taskList);
