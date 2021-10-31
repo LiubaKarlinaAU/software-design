@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Application</title>
+</head>
+<body>
+
+<h3>Your task lists</h3>
+<table>
+    <th:block th:each="tasklist : ${tasklists}">
+        <tr>
+            <td th:text="${tasklist.getId()}"/>
+            <td th:text="${tasklist.getName()}"/>
+        </tr>
+    </th:block>
+</table>
+
+<h3>Add new task list</h3>
+<form th:object="${tasklist}" method="POST" action="/add-task-list">
+    <table>
+        <tr>
+            <td><label>Name:</label></td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+    </table>
+
+    <input type="submit" value="add">
+</form>
+
+<h3>Delete task list by id</h3>
+<form th:object="${listIndex}" method="POST" action="/delete-task-list">
+    <table>
+        <tr>
+            <td><label>Id:</label></td>
+            <td><input type="text" placeholder="" th:field="*{index}"/></td>
+        </tr>
+    </table>
+
+    <input type="submit" value="delete">
+</form>
+
+</body>
+</html>
