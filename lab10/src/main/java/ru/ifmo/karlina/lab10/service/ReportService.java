@@ -2,6 +2,7 @@ package ru.ifmo.karlina.lab10.service;
 
 import ru.ifmo.karlina.lab10.events.Event;
 import ru.ifmo.karlina.lab10.events.EventType;
+import ru.ifmo.karlina.lab10.exceptions.FitnessException;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -16,7 +17,7 @@ public class ReportService {
     private static long totalDuration = 0L;
     private static long totalVisits = 0L;
 
-    public static void handle(Event event){
+    public static void handle(Event event) throws FitnessException {
         if (event.getType() == EventType.Enter) {
             visitStart.put(event.getSubscriptionId(), event.getTime());
             DayOfWeek day = event.getTime().getDayOfWeek();
@@ -27,11 +28,10 @@ public class ReportService {
             }
         } else if (event.getType() == EventType.Exit) {
             if (!visitStart.containsKey(event.getSubscriptionId())) {
-                System.err.println("This subscription should enter first");
-                return;
+                throw new FitnessException("This subscription should enter first");
             }
             LocalDateTime startTime = visitStart.get(event.getSubscriptionId());
-            long duration = Duration.between(startTime, event.getTime()).get(ChronoUnit.MINUTES);
+            long duration = Duration.between(startTime, event.getTime()).get(ChronoUnit.SECONDS) / 60;
             totalDuration += duration;
             totalVisits += 1;
         }
@@ -47,10 +47,13 @@ public class ReportService {
             result += dailyStats.get(day);
         }
 
-        return result / dailyStats.size();
+        return result / 7;
     }
 
     public static double getDuration() {
+        if (totalVisits == 0) {
+            return 0;
+        }
         return totalDuration * 1.0 / totalVisits;
     }
 }

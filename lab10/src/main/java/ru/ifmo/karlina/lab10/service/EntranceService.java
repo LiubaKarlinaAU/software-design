@@ -3,6 +3,7 @@ package ru.ifmo.karlina.lab10.service;
 import ru.ifmo.karlina.lab10.clock.Clock;
 import ru.ifmo.karlina.lab10.events.Event;
 import ru.ifmo.karlina.lab10.events.EventType;
+import ru.ifmo.karlina.lab10.exceptions.FitnessException;
 import ru.ifmo.karlina.lab10.storages.ReadRepository;
 import ru.ifmo.karlina.lab10.storages.WriteRepository;
 
@@ -20,7 +21,7 @@ public class EntranceService {
     }
 
 
-    public boolean enter(long subscriptionId) {
+    public boolean enter(long subscriptionId) throws FitnessException {
         LocalDateTime now = clock.now();
         if (!readRepository.validSubscription(subscriptionId, now)) {
             return false;
@@ -30,7 +31,7 @@ public class EntranceService {
         return true;
     }
 
-    public void exit(long subscriptionId) {
+    public void exit(long subscriptionId) throws FitnessException {
         writeRepository.addEvent(new Event(subscriptionId, clock, EventType.Exit));
     }
 }
